@@ -328,7 +328,11 @@ main{max-width:960px;margin:0 auto;padding:24px 20px 100px;position:relative;z-i
 /* ADMIN MATCH FORM */
 .admin-match-form{background:var(--s2);border-radius:12px;padding:16px;margin-bottom:12px;}
 
-@media(max-width:600px){
+.round-tabs{scrollbar-width:none;}
+.round-tabs::-webkit-scrollbar{display:none;}
+.round-tab-btn{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:var(--s1);color:var(--muted2);font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0;}
+.round-tab-btn.active{background:rgba(0,230,118,0.12);border-color:var(--g);color:var(--g);}
+.round-tab-btn:hover{border-color:var(--muted2);color:var(--text);}
   .home-grid{grid-template-columns:1fr 1fr;}
   .home-name{font-size:26px;}
   .profile-hero{flex-direction:column;text-align:center;}
@@ -782,6 +786,9 @@ function renderTournamentDetail(id){
     return Promise.all([teamsQ, matchesQ, Promise.resolve(ttRows)]);
   }).then(function(results){
     var teams=results[0], matches=results[1];
+    // Store globally for round tab switching
+    S._currentMatches=matches;
+    S._currentTeams=teams;
     // Step 3: load events for finished matches
     var finishedIds=matches.filter(function(m){return m.status==='finished';}).map(function(m){return m.id;});
     var eventsQ=finishedIds.length?GET('match_events','?match_id=in.('+finishedIds.join(',')+')'):Promise.resolve([]);
@@ -922,50 +929,107 @@ function renderRounds(matches,teams,events,t){
   });
   var rounds=Object.keys(byRound).map(Number).sort(function(a,b){return a-b;});
 
-  // find current round (first with unfinished matches)
+  // find current round
   var currentRound=rounds[rounds.length-1];
   for(var i=0;i<rounds.length;i++){
-    var rMatches=byRound[rounds[i]];
-    var hasUnfinished=rMatches.some(function(m){return m.status!=='finished';});
+    var hasUnfinished=byRound[rounds[i]].some(function(m){return m.status!=='finished';});
     if(hasUnfinished){currentRound=rounds[i];break;}
   }
 
-  return '<div class="rounds-wrap">'+
-    rounds.map(function(r){
-      var rms=byRound[r];
-      var isCurrent=r===currentRound;
-      var allDone=rms.every(function(m){return m.status==='finished';});
-      return '<div class="round-card'+(isCurrent?' current-round':'')+'">'+
-        '<div class="round-header">'+
-          '<div class="round-title">Тур '+r+'</div>'+
-          (isCurrent?'<div class="round-badge">Актуальный</div>':(allDone?'<div style="font-size:10px;color:var(--muted2);">Завершён</div>':''))+
+  // build unique id for this rounds block
+  var uid='rounds_'+Date.now();
+
+  function renderRoundMatches(r){
+    var rms=byRound[r]||[];
+    return rms.map(function(m){
+      var home=teams.find(function(t){return t.id===m.home_team_id;})||{name:'TBD',color:'#666'};
+      var away=teams.find(function(t){return t.id===m.away_team_id;})||{name:'TBD',color:'#666'};
+      var done=m.status==='finished';
+      var adminBtn=S.user&&S.user.is_admin&&!done?
+        '<button class="btn btn-xs btn-outline" style="margin-left:6px;" onclick="event.stopPropagation();openSetResult(\''+m.id+'\',\''+home.name+'\',\''+away.name+'\')">⚽</button>':'';
+      return '<div class="match-row" onclick="openMatchDetail(\''+m.id+'\')">'+
+        '<div class="match-dot" style="background:'+(home.color||'#666')+'"></div>'+
+        '<div class="match-team-name home">'+home.name+'</div>'+
+        '<div class="match-score-box">'+
+          '<div class="match-score">'+(done?m.home_score:'–')+'<span class="sep">:</span>'+(done?m.away_score:'–')+'</div>'+
+          '<div class="match-status-txt">'+(done?'Завершён':m.status==='live'?'🔴 Live':'Запланирован')+'</div>'+
         '</div>'+
-        rms.map(function(m){
-          var home=teams.find(function(t){return t.id===m.home_team_id;})||{name:'TBD',color:'#666'};
-          var away=teams.find(function(t){return t.id===m.away_team_id;})||{name:'TBD',color:'#666'};
-          var done=m.status==='finished';
-          return '<div class="match-row" onclick="openMatchDetail(\''+m.id+'\')">'+
-            '<div class="match-dot" style="background:'+(home.color||'#666')+'"></div>'+
-            '<div class="match-team-name home">'+home.name+'</div>'+
-            '<div class="match-score-box">'+
-              '<div class="match-score">'+(done?m.home_score:'–')+'<span class="sep">:</span>'+(done?m.away_score:'–')+'</div>'+
-              '<div class="match-status-txt">'+(done?'Завершён':m.status==='live'?'🔴 Live':'Запланирован')+'</div>'+
-            '</div>'+
-            '<div class="match-team-name">'+away.name+'</div>'+
-            '<div class="match-dot" style="background:'+(away.color||'#666')+'"></div>'+
-          '</div>';
-        }).join('')+
-        (S.user&&S.user.is_admin?'<div style="padding:8px 16px;border-top:1px solid var(--border);">'+
-          rms.filter(function(m){return m.status!=='finished';}).map(function(m){
-            var home=teams.find(function(t){return t.id===m.home_team_id;})||{name:'?'};
-            var away=teams.find(function(t){return t.id===m.away_team_id;})||{name:'?'};
-            return '<button class="btn btn-outline btn-xs" style="margin:2px;" onclick="openSetResult(\''+m.id+'\',\''+home.name+'\',\''+away.name+'\')">'+
-              '⚽ '+home.name+' vs '+away.name+'</button>';
-          }).join('')+
-        '</div>':'')+
+        '<div class="match-team-name">'+away.name+'</div>'+
+        '<div class="match-dot" style="background:'+(away.color||'#666')+'"></div>'+
+        adminBtn+
       '</div>';
-    }).join('')+
+    }).join('');
+  }
+
+  // Tab buttons
+  var tabBtns=rounds.map(function(r){
+    var isCur=r===currentRound;
+    return '<button class="round-tab-btn'+(isCur?' active':'')+'" onclick="switchRoundTab(\''+uid+'\','+r+','+JSON.stringify(rounds)+')" id="rtab_'+uid+'_'+r+'">Тур '+r+'</button>';
+  }).join('');
+
+  var initialMatches=renderRoundMatches(currentRound);
+
+  return '<div id="'+uid+'" class="rounds-block">'+
+    '<div class="round-tabs" style="display:flex;gap:4px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;">'+
+      tabBtns+
+    '</div>'+
+    '<div class="round-card current-round" id="'+uid+'_matches">'+
+      '<div class="round-header">'+
+        '<div class="round-title" id="'+uid+'_title">Тур '+currentRound+'</div>'+
+        '<div class="round-badge">Актуальный</div>'+
+      '</div>'+
+      '<div id="'+uid+'_body">'+initialMatches+'</div>'+
+    '</div>'+
   '</div>';
+}
+
+// Store rounds data globally for tab switching
+var _roundsData={};
+
+function switchRoundTab(uid, round, rounds){
+  // update active tab
+  rounds.forEach(function(r){
+    var btn=document.getElementById('rtab_'+uid+'_'+r);
+    if(btn) btn.classList.toggle('active', r===round);
+  });
+  // update title
+  var titleEl=document.getElementById(uid+'_title');
+  if(titleEl) titleEl.textContent='Тур '+round;
+  // remove badge
+  var card=document.getElementById(uid+'_matches');
+  if(card){
+    var badge=card.querySelector('.round-badge');
+    if(badge) badge.textContent='';
+  }
+  // render matches for this round
+  var bodyEl=document.getElementById(uid+'_body');
+  if(!bodyEl) return;
+  // get matches from current tournament data
+  if(!S._currentMatches||!S._currentTeams){bodyEl.innerHTML='<div class="loader"><div class="spin"></div></div>';return;}
+  var byRound={};
+  S._currentMatches.forEach(function(m){
+    var r=m.round||1;if(!byRound[r])byRound[r]=[];byRound[r].push(m);
+  });
+  var rms=byRound[round]||[];
+  if(!rms.length){bodyEl.innerHTML='<div class="empty" style="padding:24px;"><div class="empty-txt">Нет матчей в туре '+round+'</div></div>';return;}
+  bodyEl.innerHTML=rms.map(function(m){
+    var home=S._currentTeams.find(function(t){return t.id===m.home_team_id;})||{name:'TBD',color:'#666'};
+    var away=S._currentTeams.find(function(t){return t.id===m.away_team_id;})||{name:'TBD',color:'#666'};
+    var done=m.status==='finished';
+    var adminBtn=S.user&&S.user.is_admin&&!done?
+      '<button class="btn btn-xs btn-outline" style="margin-left:6px;" onclick="event.stopPropagation();openSetResult(\''+m.id+'\',\''+home.name+'\',\''+away.name+'\')">⚽</button>':'';
+    return '<div class="match-row" onclick="openMatchDetail(\''+m.id+'\')">'+
+      '<div class="match-dot" style="background:'+(home.color||'#666')+'"></div>'+
+      '<div class="match-team-name home">'+home.name+'</div>'+
+      '<div class="match-score-box">'+
+        '<div class="match-score">'+(done?m.home_score:'–')+'<span class="sep">:</span>'+(done?m.away_score:'–')+'</div>'+
+        '<div class="match-status-txt">'+(done?'Завершён':m.status==='live'?'🔴 Live':'Запланирован')+'</div>'+
+      '</div>'+
+      '<div class="match-team-name">'+away.name+'</div>'+
+      '<div class="match-dot" style="background:'+(away.color||'#666')+'"></div>'+
+      adminBtn+
+    '</div>';
+  }).join('');
 }
 
 // ── MATCH DETAIL ─────────────────────────────────────
@@ -1223,6 +1287,12 @@ function updateTournament(id){
 }
 
 // ── TEAM PAGE ─────────────────────────────────────────
+function openTeamManagement(teamId){
+  S._prevPage='profile';
+  showPage('team');
+  loadTeamPage(teamId);
+}
+
 function openTeamPage(teamId){
   openTeamProfile(teamId);
 }
@@ -1239,52 +1309,64 @@ function loadTeamPage(teamId){
     var team=teams[0];
     var members=results[1];
     var captain=members.find(function(u){return u.id===team.captain_id;})||null;
-
     var isCap=S.user&&S.user.id===team.captain_id;
     var isAdmin=S.user&&S.user.is_admin;
 
-    var rosterHtml=members.map(function(u){
-      var isCaptain=u.id===team.captain_id;
-      var avatarHtml=u.photo_url?'<img src="'+u.photo_url+'" alt="">':'👤';
-      return '<div class="roster-row">'+
-        '<div class="roster-avatar">'+avatarHtml+'</div>'+
-        '<div style="flex:1;">'+
-          '<div class="roster-name">'+(u.first_name||u.username||'Игрок')+(isCaptain?' <span class="cap-crown">👑</span>':'')+'</div>'+
-          '<div class="roster-meta">'+(u.username?'@'+u.username:'')+'</div>'+
-        '</div>'+
-        ((isCap||isAdmin)&&!isCaptain?'<button class="btn btn-xs btn-red" onclick="kickPlayer(\''+u.id+'\',\''+teamId+'\')">Убрать</button>':'')+
-      '</div>';
-    }).join('');
+    // load characters for members
+    var memberIds=members.map(function(u){return u.id;});
+    var charsQ=memberIds.length?GET('characters','?user_id=in.('+memberIds.join(',')+')')  :Promise.resolve([]);
+    charsQ.then(function(chars){
+      var rosterHtml=members.map(function(u){
+        var isCaptain=u.id===team.captain_id;
+        var ch=chars.find(function(c){return c.user_id===u.id;});
+        var avatarHtml=u.photo_url?'<img src="'+u.photo_url+'" alt="">':'👤';
+        return '<div class="roster-row">'+
+          '<div class="roster-avatar">'+avatarHtml+'</div>'+
+          '<div style="flex:1;">'+
+            '<div class="roster-name">'+(u.first_name||u.username||'Игрок')+(isCaptain?' <span class="cap-crown">👑</span>':'')+'</div>'+
+            '<div class="roster-meta">'+(u.username?'@'+u.username:'')+
+              (ch?' · <span class="pos-badge">'+ch.position+'</span> #'+(ch.number||'—')+' '+(COUNTRY_FLAGS[ch.country]||'')+' '+ch.country:'')+
+            '</div>'+
+          '</div>'+
+          ((isCap||isAdmin)&&!isCaptain?'<button class="btn btn-xs btn-red" onclick="kickPlayer(\''+u.id+'\',\''+teamId+'\')">Убрать</button>':'')+
+        '</div>';
+      }).join('');
 
-    var teamColorStyle='background:'+(team.color||'#00e676')+';';
-
-    el.innerHTML=
-      '<div class="team-hero">'+
-        '<div class="team-hero-top">'+
-          '<div class="team-color-badge" style="'+teamColorStyle+'">'+team.name[0]+'</div>'+
-          '<div class="team-hero-info">'+
-            '<div class="team-hero-name">'+team.name+'</div>'+
-            '<div class="team-hero-cap">👑 Капитан: '+(captain?(captain.first_name||captain.username||'?'):'?')+'</div>'+
-            '<div class="team-hero-cap" style="margin-top:4px;">👥 '+members.length+' игроков</div>'+
+      el.innerHTML=
+        '<div class="team-hero">'+
+          '<div class="team-hero-top">'+
+            '<div class="team-color-badge" style="background:'+(team.color||'#00e676')+';">'+team.name[0]+'</div>'+
+            '<div class="team-hero-info">'+
+              '<div class="team-hero-name">'+team.name+'</div>'+
+              '<div class="team-hero-cap">👑 '+(captain?(captain.first_name||captain.username||'?'):'?')+'</div>'+
+              '<div class="team-hero-cap" style="margin-top:2px;">👥 '+members.length+'/8 игроков</div>'+
+            '</div>'+
           '</div>'+
         '</div>'+
-      '</div>'+
-      '<div class="card" style="margin-bottom:16px;">'+
-        '<div style="padding:14px 16px;border-bottom:1px solid var(--border);font-family:Unbounded,cursive;font-size:13px;font-weight:700;">Состав</div>'+
-        (rosterHtml||'<div class="empty" style="padding:24px;"><div class="empty-txt">Нет игроков</div></div>')+
-        (isCap?'<div style="padding:12px 16px;border-top:1px solid var(--border);">'+
-          '<div style="display:flex;gap:8px;">'+
-            '<input type="text" class="form-input" id="inviteSearchInput" placeholder="@username игрока..." style="flex:1;">'+
-            '<button class="btn btn-g btn-sm" onclick="searchAndInvite(\''+teamId+'\')">Пригласить</button>'+
+        '<div class="card" style="margin-bottom:16px;">'+
+          '<div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">'+
+            '<div style="font-family:Unbounded,cursive;font-size:13px;font-weight:700;">Состав</div>'+
+            (isCap?'<span style="font-size:11px;color:var(--muted2);">'+members.length+'/8</span>':'')+
           '</div>'+
-          '<div id="inviteResultWrap" style="margin-top:8px;"></div>'+
-        '</div>':'')+
-      '</div>'+
-      (isAdmin?'<div style="display:flex;gap:8px;flex-wrap:wrap;">'+
-        '<button class="btn btn-outline btn-sm" onclick="openTransferCaptain(\''+teamId+'\')">👑 Сменить капитана</button>'+
-        '<button class="btn btn-red btn-sm" onclick="requestDeleteTeam(\''+teamId+'\')">🗑 Запрос на удаление</button>'+
-      '</div>':'')+
-    '';
+          (rosterHtml||'<div class="empty" style="padding:24px;"><div class="empty-txt">Нет игроков</div></div>')+
+          (isCap&&members.length<8?
+            '<div style="padding:14px 16px;border-top:1px solid var(--border);">'+
+              '<div style="font-size:12px;color:var(--muted2);margin-bottom:8px;">Пригласить игрока по @username:</div>'+
+              '<div style="display:flex;gap:8px;">'+
+                '<input type="text" class="form-input" id="inviteSearchInput" placeholder="@username" style="flex:1;padding:9px 12px;font-size:13px;">'+
+                '<button class="btn btn-g btn-sm" onclick="searchAndInvite(\''+teamId+'\')">🔍 Найти</button>'+
+              '</div>'+
+              '<div id="inviteResultWrap" style="margin-top:8px;"></div>'+
+            '</div>':
+            (isCap&&members.length>=8?'<div style="padding:12px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted2);">Команда укомплектована (макс. 8)</div>':'')
+          )+
+        '</div>'+
+        (isAdmin?
+          '<div style="display:flex;gap:8px;flex-wrap:wrap;">'+
+            '<button class="btn btn-outline btn-sm" onclick="openTransferCaptain(\''+teamId+'\')">👑 Сменить капитана</button>'+
+            '<button class="btn btn-red btn-sm" onclick="requestDeleteTeamDirect(\''+teamId+'\')">🗑 Удалить команду</button>'+
+          '</div>':'')+'';
+    }).catch(function(){el.innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-txt">Ошибка</div></div>';});
   }).catch(function(e){console.error(e);el.innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-txt">Ошибка</div></div>';});
 }
 
@@ -1431,11 +1513,11 @@ function renderProfile(){
             '<div style="width:32px;height:32px;border-radius:8px;background:'+(S.myTeam.color||'#00e676')+';display:flex;align-items:center;justify-content:center;font-family:Unbounded,cursive;font-weight:900;color:#000;font-size:14px;">'+S.myTeam.name[0]+'</div>'+
             '<div class="my-team-name">'+S.myTeam.name+(isCap?' 👑':'')+'</div>'+
           '</div>'+
-          '<button class="btn btn-outline btn-sm" onclick="openTeamProfile(\''+S.myTeam.id+'\')">Открыть</button>'+
+          '<button class="btn btn-outline btn-sm" onclick="openTeamManagement(\''+S.myTeam.id+'\')">Открыть</button>'+
         '</div>'+
         (isCap?
           '<div style="padding:8px 16px;display:flex;gap:8px;border-top:1px solid var(--border);flex-wrap:wrap;">'+
-            '<button class="btn btn-outline btn-xs" onclick="loadTeamPage(\''+S.myTeam.id+'\')">👥 Управление составом</button>'+
+            '<button class="btn btn-outline btn-xs" onclick="openTeamManagement(\''+S.myTeam.id+'\')">👥 Управление составом</button>'+
             '<button class="btn btn-outline btn-xs" onclick="requestTransferCaptain(\''+S.myTeam.id+'\')">👑 Передать капитанство</button>'+
             '<button class="btn btn-red btn-xs" onclick="requestDeleteTeam(\''+S.myTeam.id+'\')">🗑 Удалить</button>'+
           '</div>':
@@ -1493,12 +1575,14 @@ function renderProfile(){
 }
 
 function openCreateTeam(){
-  var opts=TEAM_COLORS.map(function(c,i){return '<div class="color-opt'+(i===0?' sel':'')+'" style="background:'+c+';" onclick="selectColor(this,\''+c+'\')"></div>';}).join('');
-  openModal('Создать команду',
-    '<div class="form-group"><label class="form-label">Название команды *</label><input type="text" class="form-input" id="newTeamName" placeholder="FC Дракон" maxlength="30"></div>'+
-    '<div class="form-group"><label class="form-label">Цвет команды</label><div class="color-opts">'+opts+'</div><input type="hidden" id="selectedColor" value="'+TEAM_COLORS[0]+'"></div>'+
-    '<button class="btn btn-g" style="width:100%;margin-top:8px;" onclick="createTeam()">Создать команду</button>'
-  );
+  requireCharacter(function(){
+    var opts=TEAM_COLORS.map(function(c,i){return '<div class="color-opt'+(i===0?' sel':'')+'" style="background:'+c+';" onclick="selectColor(this,\''+c+'\')"></div>';}).join('');
+    openModal('Создать команду',
+      '<div class="form-group"><label class="form-label">Название команды *</label><input type="text" class="form-input" id="newTeamName" placeholder="FC Дракон" maxlength="30"></div>'+
+      '<div class="form-group"><label class="form-label">Цвет команды</label><div class="color-opts">'+opts+'</div><input type="hidden" id="selectedColor" value="'+TEAM_COLORS[0]+'"></div>'+
+      '<button class="btn btn-g" style="width:100%;margin-top:8px;" onclick="createTeam()">Создать команду</button>'
+    );
+  });
 }
 
 function selectColor(el,color){
@@ -1877,55 +1961,71 @@ function saveResult(matchId){
 var COUNTRIES = ['AZ','RU','TR','DE','ES','FR','BR','AR','PT','IT','EN','UA','KZ','GE','AM'];
 var COUNTRY_FLAGS = {AZ:'🇦🇿',RU:'🇷🇺',TR:'🇹🇷',DE:'🇩🇪',ES:'🇪🇸',FR:'🇫🇷',BR:'🇧🇷',AR:'🇦🇷',PT:'🇵🇹',IT:'🇮🇹',EN:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',UA:'🇺🇦',KZ:'🇰🇿',GE:'🇬🇪',AM:'🇦🇲'};
 
-function openCharacterRegistration(teamId, inviteId){
-  var countryOpts=COUNTRIES.map(function(c){return '<option value="'+c+'">'+(COUNTRY_FLAGS[c]||'')+ ' '+c+'</option>';}).join('');
-  openModal('Регистрация персонажа',
-    '<div style="color:var(--muted2);font-size:13px;margin-bottom:20px;">Создай своего персонажа для участия в турнирах</div>'+
-    '<div class="form-group"><label class="form-label">Никнейм *</label><input type="text" class="form-input" id="charNick" placeholder="CristianoXX" maxlength="20"></div>'+
-    '<div class="form-row">'+
-      '<div class="form-group"><label class="form-label">Позиция</label><select class="form-input" id="charPos">'+
-        '<option value="ВР">🥅 ВР — Вратарь</option>'+
-        '<option value="ЗЩ">🛡 ЗЩ — Защитник</option>'+
-        '<option value="МП" selected>🔄 МП — Полузащ.</option>'+
-        '<option value="НП">⚡ НП — Нападающий</option>'+
-      '</select></div>'+
-      '<div class="form-group"><label class="form-label">Номер</label><input type="number" class="form-input" id="charNum" min="1" max="99" placeholder="10"></div>'+
+// Check if user has character — if not, show registration first
+function requireCharacter(callback){
+  GET('characters','?user_id=eq.'+S.user.id).then(function(chars){
+    if(chars.length){callback();}
+    else{openCharacterRegistration(null, null, callback);}
+  });
+}
+
+function openCharacterRegistration(teamId, inviteId, callback){
+  var countryOpts=COUNTRIES.map(function(c){return '<option value="'+c+'">'+(COUNTRY_FLAGS[c]||'')+' '+c+'</option>';}).join('');
+  openModal('Регистрация игрока',
+    '<div style="text-align:center;margin-bottom:20px;">'+
+      '<div style="font-size:44px;">⚽</div>'+
+      '<div style="font-family:Unbounded,cursive;font-size:16px;font-weight:700;margin-top:8px;">Зарегистрируй себя</div>'+
+      '<div style="color:var(--muted2);font-size:13px;margin-top:6px;">Это необходимо для участия в командах и турнирах</div>'+
     '</div>'+
-    '<div class="form-group"><label class="form-label">Страна</label><select class="form-input" id="charCountry">'+countryOpts+'</select></div>'+
-    '<button class="btn btn-g" style="width:100%;margin-top:8px;" onclick="saveCharacter(\''+teamId+'\',\''+inviteId+'\')">⚽ Создать персонажа</button>'
+    '<div class="form-group"><label class="form-label">Позиция</label><select class="form-input" id="charPos">'+
+      '<option value="ВР">🥅 ВР — Вратарь</option>'+
+      '<option value="ЗЩ">🛡 ЗЩ — Защитник</option>'+
+      '<option value="МП" selected>🔄 МП — Полузащитник</option>'+
+      '<option value="НП">⚡ НП — Нападающий</option>'+
+    '</select></div>'+
+    '<div class="form-row">'+
+      '<div class="form-group"><label class="form-label">Номер</label><input type="number" class="form-input" id="charNum" min="1" max="99" placeholder="10"></div>'+
+      '<div class="form-group"><label class="form-label">Страна</label><select class="form-input" id="charCountry">'+countryOpts+'</select></div>'+
+    '</div>'+
+    '<button class="btn btn-g" style="width:100%;margin-top:8px;" onclick="saveCharacter(\''+teamId+'\',\''+inviteId+'\')">Зарегистрироваться</button>'
   );
+  // store callback
+  S._charCallback=callback||null;
 }
 
 function saveCharacter(teamId, inviteId){
-  var nick=document.getElementById('charNick').value.trim();
-  if(!nick){toast('Введи никнейм','err');return;}
   var pos=document.getElementById('charPos').value;
   var num=parseInt(document.getElementById('charNum').value)||null;
   var country=document.getElementById('charCountry').value;
+  // use telegram first_name or username as display name
+  var displayName=S.user.first_name||S.user.username||'Игрок';
 
-  // check if character already exists
   GET('characters','?user_id=eq.'+S.user.id).then(function(existing){
     var saveOp;
+    var data={user_id:S.user.id,position:pos,number:num,country:country,nickname:displayName};
+    if(teamId) data.team_id=teamId;
     if(existing.length){
-      saveOp=PATCH('characters','user_id=eq.'+S.user.id,{nickname:nick,position:pos,number:num,country:country,team_id:teamId});
+      saveOp=PATCH('characters','user_id=eq.'+S.user.id,{position:pos,number:num,country:country});
     } else {
-      saveOp=POST('characters',{user_id:S.user.id,team_id:teamId,nickname:nick,position:pos,number:num,country:country});
+      saveOp=POST('characters',data);
     }
     saveOp.then(function(){
-      // Now accept invite
-      if(inviteId){
+      if(inviteId&&teamId){
         PATCH('team_invites','id=eq.'+inviteId,{status:'accepted'}).then(function(){
           PATCH('users','id=eq.'+S.user.id,{team_id:teamId}).then(function(){
             S.user.team_id=teamId;
             localStorage.setItem('liga_user',JSON.stringify(S.user));
-            toast('Персонаж создан и ты в команде!');
+            toast('Зарегистрирован и в команде!');
             closeModal();
             document.getElementById('invitePage').style.display='none';
             launchApp();
           });
         });
       } else {
-        toast('Персонаж обновлён!');closeModal();renderProfile();
+        toast('Зарегистрирован!');
+        closeModal();
+        if(S._charCallback){var cb=S._charCallback;S._charCallback=null;cb();}
+        else renderProfile();
       }
     }).catch(function(){toast('Ошибка','err');});
   });
@@ -2249,12 +2349,14 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 
 // Request team deletion (from captain in team page)
-function requestDeleteTeam(teamId){
-  openModal('Запрос на удаление',
-    '<div style="color:var(--muted2);font-size:13px;margin-bottom:16px;">Запрос будет рассмотрен администратором. После одобрения команда удаляется, игроки становятся свободными.</div>'+
-    '<div class="form-group"><label class="form-label">Причина (необязательно)</label><input type="text" class="form-input" id="delReason" placeholder="Причина удаления..."></div>'+
-    '<button class="btn btn-red" style="width:100%;" onclick="submitDeleteRequest(\''+teamId+'\')">Отправить запрос</button>'
-  );
+function requestDeleteTeamDirect(teamId){
+  if(!confirm('Удалить команду? Все игроки станут свободными.')) return;
+  PATCH('users','team_id=eq.'+teamId,{team_id:null}).then(function(){
+    PATCH('characters','team_id=eq.'+teamId,{team_id:null}).catch(function(){});
+    return DEL('teams','id=eq.'+teamId);
+  }).then(function(){
+    toast('Команда удалена');closeModal();showPage('tournaments');
+  }).catch(function(){toast('Ошибка','err');});
 }
 
 function submitDeleteRequest(teamId){
