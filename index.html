@@ -693,13 +693,21 @@ function renderTournamentDetail(id){
   var sl={registration:'🔵 Регистрация',active:'🟢 Активный',finished:'✅ Завершён',cancelled:'❌ Отменён'};
   var tl={league:'Лига',cup:'Кубок','group+playoff':'Группа + ПО',friendly:'Товарищеский'};
 
-  Promise.all([
-    GET('tournament_teams','?tournament_id=eq.'+id+'&select=*,team:teams(*)'),
-    GET('matches','?tournament_id=eq.'+id+'&order=round.asc,created_at.asc'),
-    GET('match_events','?match_id=in.(select id from matches where tournament_id=eq.'+id+')')
-  ]).then(function(results){
-    var ttRows=results[0], matches=results[1], events=results[2];
-    var teams=ttRows.map(function(r){return r.team;}).filter(Boolean);
+  // Step 1: get tournament_teams links
+  GET('tournament_teams','?tournament_id=eq.'+id).then(function(ttRows){
+    var teamIds=ttRows.map(function(r){return r.team_id;});
+    // Step 2: load teams, matches in parallel
+    var teamsQ=teamIds.length?GET('teams','?id=in.('+teamIds.join(',')+')'):Promise.resolve([]);
+    var matchesQ=GET('matches','?tournament_id=eq.'+id+'&order=round.asc,created_at.asc');
+    return Promise.all([teamsQ, matchesQ, Promise.resolve(ttRows)]);
+  }).then(function(results){
+    var teams=results[0], matches=results[1];
+    // Step 3: load events for finished matches
+    var finishedIds=matches.filter(function(m){return m.status==='finished';}).map(function(m){return m.id;});
+    var eventsQ=finishedIds.length?GET('match_events','?match_id=in.('+finishedIds.join(',')+')'):Promise.resolve([]);
+    return eventsQ.then(function(events){return [teams,matches,events];});
+  }).then(function(results){
+    var teams=results[0], matches=results[1], events=results[2];
 
     var heroHtml='<div class="t-hero">'+
       '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">'+
@@ -883,19 +891,27 @@ function renderRounds(matches,teams,events,t){
 // ── MATCH DETAIL ─────────────────────────────────────
 function openMatchDetail(matchId){
   var match=null;
-  // find match in all tournaments
   GET('matches','?id=eq.'+matchId).then(function(rows){
     if(!rows.length) return;
     match=rows[0];
-    var tid=S.currentTournament?S.currentTournament.id:null;
-    return Promise.all([
-      GET('tournament_teams','?tournament_id=eq.'+(tid||match.tournament_id)+'&select=*,team:teams(*)'),
-      GET('match_events','?match_id=eq.'+matchId+'&select=*,player:players(*)')
-    ]);
+    var tid=match.tournament_id||(S.currentTournament?S.currentTournament.id:null);
+    var ttQ=tid?GET('tournament_teams','?tournament_id=eq.'+tid):Promise.resolve([]);
+    return Promise.all([ttQ, GET('match_events','?match_id=eq.'+matchId)]);
   }).then(function(results){
     if(!results) return;
-    var ttRows=results[0],events=results[1];
-    var teams=ttRows.map(function(r){return r.team;}).filter(Boolean);
+    var ttRows=results[0], evRows=results[1];
+    var teamIds=ttRows.map(function(r){return r.team_id;});
+    var playerIds=evRows.map(function(e){return e.player_id;}).filter(Boolean);
+    var teamsQ=teamIds.length?GET('teams','?id=in.('+teamIds.join(',')+')'):Promise.resolve([]);
+    var playersQ=playerIds.length?GET('players','?id=in.('+playerIds.join(',')+')'):Promise.resolve([]);
+    return Promise.all([teamsQ, playersQ, Promise.resolve(evRows)]);
+  }).then(function(results){
+    if(!results) return;
+    var teams=results[0], playersList=results[1], evRows=results[2];
+    // attach player to event
+    var events=evRows.map(function(e){
+      return Object.assign({},e,{player:playersList.find(function(p){return p.id===e.player_id;})||null});
+    });
     var home=teams.find(function(t){return t&&t.id===match.home_team_id;})||{name:'Хозяева',color:'#666'};
     var away=teams.find(function(t){return t&&t.id===match.away_team_id;})||{name:'Гости',color:'#666'};
     var done=match.status==='finished';
@@ -1013,9 +1029,11 @@ function openAddEvent(matchId){
   GET('matches','?id=eq.'+matchId).then(function(rows){
     if(!rows.length) return;
     var m=rows[0];
-    return GET('players','?team_id=in.('+m.home_team_id+','+m.away_team_id+')');
+    var ids=[m.home_team_id,m.away_team_id].filter(Boolean);
+    return GET('users','?team_id=in.('+ids.join(',')+')&select=id,first_name,username,team_id');
   }).then(function(players){
-    var pOpts=(players||[]).map(function(p){return '<option value="'+p.id+'" data-team="'+p.team_id+'">'+p.name+'</option>';}).join('');
+    var pOpts=(players||[]).map(function(p){return '<option value="'+p.id+'" data-team="'+p.team_id+'">'+(p.first_name||p.username||'?')+'</option>';}).join('');
+    if(!pOpts) pOpts='<option>Нет игроков</option>';
     openModal('Событие матча',
       '<div class="form-group"><label class="form-label">Тип</label><select class="form-input" id="evType"><option value="goal">⚽ Гол</option><option value="assist">🅰️ Ассист</option><option value="own_goal">🔴 Автогол</option></select></div>'+
       '<div class="form-group"><label class="form-label">Игрок</label><select class="form-input" id="evPlayer">'+pOpts+'</select></div>'+
@@ -1136,16 +1154,13 @@ function loadTeamPage(teamId){
   el.innerHTML='<div class="loader"><div class="spin"></div>Загрузка...</div>';
   Promise.all([
     GET('teams','?id=eq.'+teamId),
-    GET('users','?id=eq.'+'{placeholder}'),  // captain via team
     GET('users','?team_id=eq.'+teamId)
   ]).then(function(results){
     var teams=results[0];
     if(!teams.length){el.innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-txt">Команда не найдена</div></div>';return;}
     var team=teams[0];
-    var members=results[2];
+    var members=results[1];
     var captain=members.find(function(u){return u.id===team.captain_id;})||null;
-
-    var goalsTotal=0,assistsTotal=0,matchesTotal=0;
 
     var isCap=S.user&&S.user.id===team.captain_id;
     var isAdmin=S.user&&S.user.is_admin;
@@ -1283,8 +1298,13 @@ function loadMyTeam(){
 
 // ── PLAYERS ───────────────────────────────────────────
 function loadPlayers(){
-  GET('players','?order=goals.desc,assists.desc').then(function(rows){
-    S.players=rows;renderPlayers();
+  GET('users','?order=created_at.asc&select=id,first_name,last_name,username,photo_url,team_id').then(function(rows){
+    S.players=rows.map(function(u){
+      return {id:u.id,name:(u.first_name||u.username||'Игрок')+(u.last_name?' '+u.last_name:''),photo_url:u.photo_url,team_id:u.team_id,position:'МП',goals:0,assists:0,matches_played:0,user_id:u.id};
+    });
+    renderPlayers();
+  }).catch(function(){
+    document.getElementById('playersList').innerHTML='<div class="empty"><div class="empty-ico">👟</div><div class="empty-txt">Нет данных</div></div>';
   });
 }
 
