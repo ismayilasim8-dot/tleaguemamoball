@@ -342,6 +342,85 @@ main{max-width:960px;margin:0 auto;padding:24px 20px 100px;position:relative;z-i
 .t-left{flex:0 0 340px;min-width:0;}
 .t-right{flex:1;min-width:0;}
 @media(max-width:700px){.t-layout{flex-direction:column;}.t-left,.t-right{flex:none;width:100%;}}
+
+/* RATING BADGE */
+.rating-badge{display:inline-flex;align-items:center;gap:3px;font-family:'Unbounded',cursive;font-size:13px;font-weight:900;padding:3px 8px;border-radius:8px;line-height:1;}
+.rating-badge.red{background:rgba(244,67,54,0.15);color:#f44336;}
+.rating-badge.yellow{background:rgba(255,193,7,0.15);color:#ffc107;}
+.rating-badge.green{background:rgba(0,230,118,0.15);color:#00e676;}
+.rating-badge.blue{background:rgba(68,138,255,0.2);color:#448aff;}
+.rating-badge.motm{background:rgba(68,138,255,0.25);color:#448aff;box-shadow:0 0 8px rgba(68,138,255,0.4);}
+.motm-star{font-size:11px;}
+
+/* MATCH DETAIL — два списка игроков */
+.match-lineups{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;}
+.lineup-side{background:var(--s2);border-radius:12px;overflow:hidden;}
+.lineup-header{padding:10px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.lineup-dot{width:8px;height:8px;border-radius:50%;}
+.lineup-player{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(37,37,53,0.4);}
+.lineup-player:last-child{border-bottom:none;}
+.lineup-player-info{display:flex;align-items:center;gap:8px;}
+.lineup-num{font-family:'Unbounded',cursive;font-size:11px;color:var(--muted2);width:18px;}
+.lineup-name{font-size:13px;font-weight:600;}
+.lineup-pos{font-size:10px;color:var(--muted2);}
+
+/* MATCH SCORE HEADER */
+.match-score-header{text-align:center;padding:20px 0 12px;}
+.match-score-big{font-family:'Unbounded',cursive;font-size:52px;font-weight:900;line-height:1;letter-spacing:4px;}
+.match-score-big .sep{color:var(--muted);}
+.match-teams-row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:16px;}
+.match-team-block{text-align:center;}
+.match-team-block.right{text-align:center;}
+.match-team-color{width:36px;height:36px;border-radius:10px;margin:0 auto 6px;}
+.match-team-label{font-weight:700;font-size:13px;}
+.match-team-rating{margin-top:4px;}
+.match-vs{color:var(--muted2);font-size:12px;}
+
+/* ADMIN PANEL */
+.admin-panel{background:var(--s1);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px;}
+.admin-panel-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.admin-panel-title{font-family:'Unbounded',cursive;font-size:14px;font-weight:700;}
+.admin-request-card{padding:14px 18px;border-bottom:1px solid rgba(37,37,53,0.5);display:flex;align-items:flex-start;gap:12px;}
+.admin-request-card:last-child{border-bottom:none;}
+.admin-request-info{flex:1;}
+.admin-request-type{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted2);margin-bottom:4px;}
+.admin-request-title{font-weight:700;font-size:14px;}
+.admin-request-meta{font-size:12px;color:var(--muted2);margin-top:2px;}
+.admin-request-btns{display:flex;gap:6px;margin-top:10px;}
+
+/* TOGGLE SWITCH */
+.toggle-wrap{display:flex;align-items:center;gap:12px;}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--s3);border-radius:24px;transition:.3s;border:1px solid var(--border);}
+.toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:2px;bottom:2px;background:var(--muted2);border-radius:50%;transition:.3s;}
+.toggle input:checked+.toggle-slider{background:rgba(0,230,118,0.2);border-color:var(--g);}
+.toggle input:checked+.toggle-slider:before{transform:translateX(20px);background:var(--g);}
+
+/* PLAYER PROFILE PAGE */
+.player-profile-hero{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px;position:relative;overflow:hidden;}
+.player-profile-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),transparent);}
+.player-profile-top{display:flex;align-items:center;gap:16px;}
+.player-profile-avatar{width:64px;height:64px;border-radius:16px;background:var(--s3);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden;flex-shrink:0;}
+.player-profile-avatar img{width:100%;height:100%;object-fit:cover;}
+.player-profile-name{font-family:'Unbounded',cursive;font-size:20px;font-weight:900;}
+.player-profile-meta{font-size:12px;color:var(--muted2);margin-top:4px;}
+.rating-history{display:flex;gap:6px;margin-top:12px;}
+.rh-item{flex:1;background:var(--s2);border-radius:8px;padding:8px 4px;text-align:center;}
+.rh-num{font-family:'Unbounded',cursive;font-size:14px;font-weight:700;}
+.rh-lbl{font-size:9px;color:var(--muted2);margin-top:2px;}
+
+/* CHARACTER FORM */
+.char-pos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px;}
+.char-pos-btn{padding:12px 6px;background:var(--s2);border:2px solid var(--border);border-radius:10px;color:var(--muted2);font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:center;transition:all 0.2s;}
+.char-pos-btn.active{border-color:var(--g);color:var(--g);background:rgba(0,230,118,0.08);}
+.char-pos-btn .pos-emoji{font-size:20px;display:block;margin-bottom:4px;}
+
+/* MAINTENANCE SCREEN */
+#maintenancePage{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px;position:relative;z-index:1;}
+.maintenance-icon{font-size:64px;}
+.maintenance-title{font-family:'Unbounded',cursive;font-size:24px;font-weight:900;text-align:center;}
+.maintenance-sub{color:var(--muted2);font-size:14px;text-align:center;max-width:320px;line-height:1.6;}
 </style>
 </head>
 <body>
@@ -1471,6 +1550,759 @@ function logoutUser(){
   localStorage.removeItem('liga_user');S.user=null;
   document.getElementById('appShell').style.display='none';
   document.getElementById('loginPage').style.display='flex';
+}
+
+// ══════════════════════════════════════════════════════════════
+// RATINGS ENGINE
+// ══════════════════════════════════════════════════════════════
+function calcTeamRating(goalsScored, goalsConceded, isWin, isDraw){
+  var base = 5.0;
+  var r = base + (goalsScored * 1.5) - (goalsConceded * 1.0);
+  if(isWin) r += 1.0;
+  if(isDraw) r += 0.2;
+  return Math.min(10.0, Math.max(1.0, Math.round(r * 10) / 10));
+}
+
+function calcPlayerRating(goals, assists, teamWon, autoGoals){
+  var base = 5.5;
+  var r = base + (goals * 2.5) + (assists * 1.0) + (teamWon ? 1.0 : 0) - (autoGoals * 2.0);
+  return Math.min(10.0, Math.max(1.0, Math.round(r * 10) / 10));
+}
+
+function ratingColor(r){
+  if(r <= 4.0) return '#f44336';
+  if(r <= 6.9) return '#ffc107';
+  if(r <= 8.9) return '#00e676';
+  return '#448aff';
+}
+
+function ratingBadge(r, isMotm){
+  var col = ratingColor(r);
+  var star = isMotm ? ' <span style="color:#448aff;font-size:12px;">★</span>' : '';
+  return '<span style="background:'+col+'22;color:'+col+';border:1px solid '+col+'44;border-radius:6px;padding:3px 8px;font-family:Unbounded,cursive;font-size:13px;font-weight:700;">'+r.toFixed(1)+star+'</span>';
+}
+
+// Auto-calculate and save ratings after match result set
+function autoCalcMatchRatings(matchId, homeTeamId, awayTeamId, homeScore, awayScore){
+  var homeWin = homeScore > awayScore;
+  var awayWin = awayScore > homeScore;
+
+  // Team ratings
+  var homeRating = calcTeamRating(homeScore, awayScore, homeWin, homeScore===awayScore);
+  var awayRating = calcTeamRating(awayScore, homeScore, awayWin, homeScore===awayScore);
+
+  // Upsert team ratings
+  upsertTeamRating(matchId, homeTeamId, homeScore, awayScore, homeRating);
+  upsertTeamRating(matchId, awayTeamId, awayScore, homeScore, awayRating);
+
+  // Player ratings from events
+  GET('match_events','?match_id=eq.'+matchId).then(function(events){
+    // group by character (user)
+    GET('characters','?team_id=in.('+homeTeamId+','+awayTeamId+')').then(function(chars){
+      chars.forEach(function(ch){
+        var myEvents = events.filter(function(e){return e.user_id===ch.user_id||e.player_id===ch.user_id;});
+        var goals = myEvents.filter(function(e){return e.type==='goal'&&e.team_id===ch.team_id;}).length;
+        var assists = myEvents.filter(function(e){return e.type==='assist'&&e.team_id===ch.team_id;}).length;
+        var ownGoals = myEvents.filter(function(e){return e.type==='own_goal';}).length;
+        var teamWon = ch.team_id===homeTeamId?homeWin:awayWin;
+        var pr = calcPlayerRating(goals, assists, teamWon, ownGoals);
+        upsertPlayerRating(matchId, ch, pr);
+      });
+      // find MOTM
+      findAndSetMotm(matchId);
+    });
+  });
+}
+
+function upsertTeamRating(matchId, teamId, scored, conceded, rating){
+  // check exists
+  GET('match_team_ratings','?match_id=eq.'+matchId+'&team_id=eq.'+teamId).then(function(rows){
+    if(rows.length){
+      PATCH('match_team_ratings','id=eq.'+rows[0].id,{goals_scored:scored,goals_conceded:conceded,rating:rating}).catch(function(){});
+    } else {
+      POST('match_team_ratings',{match_id:matchId,team_id:teamId,goals_scored:scored,goals_conceded:conceded,rating:rating}).catch(function(){});
+    }
+  });
+}
+
+function upsertPlayerRating(matchId, character, autoRating){
+  GET('match_ratings','?match_id=eq.'+matchId+'&character_id=eq.'+character.id).then(function(rows){
+    if(rows.length){
+      PATCH('match_ratings','id=eq.'+rows[0].id,{auto_rating:autoRating,user_id:character.user_id,team_id:character.team_id}).catch(function(){});
+    } else {
+      POST('match_ratings',{match_id:matchId,character_id:character.id,user_id:character.user_id,team_id:character.team_id,auto_rating:autoRating,is_motm:false}).catch(function(){});
+    }
+  });
+}
+
+function findAndSetMotm(matchId){
+  GET('match_ratings','?match_id=eq.'+matchId+'&order=auto_rating.desc&limit=1').then(function(rows){
+    if(!rows.length) return;
+    // reset all
+    PATCH('match_ratings','match_id=eq.'+matchId,{is_motm:false}).then(function(){
+      PATCH('match_ratings','id=eq.'+rows[0].id,{is_motm:true}).catch(function(){});
+    }).catch(function(){});
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// MATCH DETAIL — ENHANCED WITH RATINGS & LINEUPS
+// ══════════════════════════════════════════════════════════════
+function openMatchDetailFull(matchId){
+  openModal('Матч','<div class="loader"><div class="spin"></div>Загрузка...</div>');
+  var match, teams=[], events=[], homeRatings={}, awayRatings={}, homeTeamRating=null, awayTeamRating=null;
+
+  GET('matches','?id=eq.'+matchId).then(function(rows){
+    if(!rows.length) return;
+    match=rows[0];
+    var tid=match.tournament_id||(S.currentTournament?S.currentTournament.id:null);
+    return Promise.all([
+      tid?GET('tournament_teams','?tournament_id=eq.'+tid):Promise.resolve([]),
+      GET('match_events','?match_id=eq.'+matchId),
+      GET('match_ratings','?match_id=eq.'+matchId),
+      GET('match_team_ratings','?match_id=eq.'+matchId)
+    ]);
+  }).then(function(results){
+    if(!results) return;
+    var ttRows=results[0], evRows=results[1], prRows=results[2], trRows=results[3];
+
+    var teamIds=ttRows.map(function(r){return r.team_id;});
+    if(match&&match.home_team_id&&teamIds.indexOf(match.home_team_id)<0) teamIds.push(match.home_team_id);
+    if(match&&match.away_team_id&&teamIds.indexOf(match.away_team_id)<0) teamIds.push(match.away_team_id);
+
+    // player ratings map
+    prRows.forEach(function(r){
+      var finalR = r.manual_rating != null ? r.manual_rating : r.auto_rating;
+      if(r.team_id===match.home_team_id) homeRatings[r.character_id]={rating:finalR,isMotm:r.is_motm,id:r.id};
+      else awayRatings[r.character_id]={rating:finalR,isMotm:r.is_motm,id:r.id};
+    });
+    trRows.forEach(function(r){
+      if(r.team_id===match.home_team_id) homeTeamRating=r.rating;
+      else awayTeamRating=r.rating;
+    });
+
+    events=evRows;
+    var teamsQ=teamIds.length?GET('teams','?id=in.('+teamIds.join(',')+')'):Promise.resolve([]);
+    var charsQ=GET('characters','?team_id=in.('+match.home_team_id+','+match.away_team_id+')');
+    return Promise.all([teamsQ, charsQ]);
+  }).then(function(results){
+    if(!results) return;
+    teams=results[0]; var chars=results[1];
+    var home=teams.find(function(t){return t.id===match.home_team_id;})||{name:'Хозяева',color:'#666'};
+    var away=teams.find(function(t){return t.id===match.away_team_id;})||{name:'Гости',color:'#666'};
+    var done=match.status==='finished';
+    var homeChars=chars.filter(function(c){return c.team_id===match.home_team_id;});
+    var awayChars=chars.filter(function(c){return c.team_id===match.away_team_id;});
+
+    // Build lineup HTML
+    function lineupSide(chars, ratings, teamColor){
+      if(!chars.length) return '<div style="color:var(--muted2);font-size:12px;text-align:center;padding:16px;">Нет персонажей</div>';
+      return chars.map(function(ch){
+        var rd=ratings[ch.id];
+        var r=rd?rd.rating:null;
+        var isMotm=rd?rd.isMotm:false;
+        var rHtml=r!=null?ratingBadge(r,isMotm):'<span style="color:var(--muted2);font-size:11px;">—</span>';
+        var adminEdit=S.user&&S.user.is_admin&&done?
+          '<button class="btn btn-xs btn-outline" style="margin-left:6px;" onclick="openEditRating(\''+matchId+'\',\''+(rd?rd.id:'')+'\',\''+ch.id+'\',\''+(match.home_team_id===ch.team_id?match.home_team_id:match.away_team_id)+'\','+( r||5.5)+')">✏️</button>':'';
+        return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(37,37,53,0.4);">'+
+          '<div style="width:24px;height:24px;border-radius:6px;background:'+(teamColor||'#666')+'22;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:'+(teamColor||'#666')+';">'+(ch.number||'—')+'</div>'+
+          '<div style="flex:1;">'+
+            '<div style="font-weight:600;font-size:13px;">'+ch.nickname+'</div>'+
+            '<div style="font-size:10px;color:var(--muted2);">'+ch.position+' · '+ch.country+'</div>'+
+          '</div>'+
+          rHtml+adminEdit+
+        '</div>';
+      }).join('');
+    }
+
+    // Events
+    var evHtml='';
+    if(events.length){
+      evHtml='<div style="margin-top:16px;"><div class="section-title" style="margin-bottom:8px;">События</div>'+
+        events.map(function(e){
+          var ico={goal:'⚽',assist:'🅰️',own_goal:'🔴'}[e.type]||'?';
+          var ch=chars.find(function(c){return c.user_id===e.user_id||c.id===e.player_id;});
+          var pname=ch?ch.nickname:(e.player_name||'?');
+          var tm=teams.find(function(t){return t.id===e.team_id;});
+          return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(37,37,53,0.4);">'+
+            '<span style="font-size:16px;width:24px;text-align:center;">'+ico+'</span>'+
+            '<div style="flex:1;"><div style="font-weight:600;font-size:13px;">'+pname+'</div><div style="font-size:11px;color:var(--muted2);">'+(tm?tm.name:'')+'</div></div>'+
+            (e.minute?'<span style="font-size:11px;color:var(--muted2);">'+e.minute+"'</span>":'')+
+          '</div>';
+        }).join('')+
+      '</div>';
+    }
+
+    var addEventBtn=S.user&&S.user.is_admin&&done?'<button class="btn btn-outline btn-sm" style="width:100%;margin-top:12px;" onclick="openAddEvent(\''+matchId+'\')">+ Событие</button>':'';
+    var setResultBtn=S.user&&S.user.is_admin&&!done?'<button class="btn btn-g" style="width:100%;margin-top:12px;" onclick="openSetResult(\''+matchId+'\',\''+home.name+'\',\''+away.name+'\')">⚽ Ввести результат</button>':'';
+
+    var html=
+      // Score header
+      '<div style="text-align:center;margin-bottom:4px;">'+
+        '<div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:8px;">'+
+          '<div style="text-align:center;">'+
+            '<div style="width:36px;height:36px;border-radius:10px;background:'+(home.color||'#666')+';margin:0 auto 6px;"></div>'+
+            '<div style="font-weight:700;font-size:13px;">'+home.name+'</div>'+
+            (homeTeamRating!=null?'<div style="margin-top:4px;">'+ratingBadge(homeTeamRating,false)+'</div>':'')+
+          '</div>'+
+          '<div style="font-family:Unbounded,cursive;font-size:36px;font-weight:900;">'+(done?match.home_score:'–')+' <span style="color:var(--muted)">:</span> '+(done?match.away_score:'–')+'</div>'+
+          '<div style="text-align:center;">'+
+            '<div style="width:36px;height:36px;border-radius:10px;background:'+(away.color||'#666')+';margin:0 auto 6px;"></div>'+
+            '<div style="font-weight:700;font-size:13px;">'+away.name+'</div>'+
+            (awayTeamRating!=null?'<div style="margin-top:4px;">'+ratingBadge(awayTeamRating,false)+'</div>':'')+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      // Lineups
+      (done?
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">'+
+          '<div>'+
+            '<div style="font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">'+home.name+'</div>'+
+            lineupSide(homeChars, homeRatings, home.color)+
+          '</div>'+
+          '<div>'+
+            '<div style="font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;text-align:right;">'+away.name+'</div>'+
+            lineupSide(awayChars, awayRatings, away.color)+
+          '</div>'+
+        '</div>':
+        '<div style="color:var(--muted2);text-align:center;padding:20px;font-size:13px;">Матч ещё не сыгран</div>'
+      )+
+      evHtml+addEventBtn+setResultBtn;
+
+    document.getElementById('modalBody').innerHTML=html;
+  }).catch(function(e){console.error(e);document.getElementById('modalBody').innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-txt">Ошибка загрузки</div></div>';});
+}
+
+// Override openMatchDetail to use new full version
+function openMatchDetail(matchId){
+  openModal('Матч','<div class="loader"><div class="spin"></div>Загрузка...</div>');
+  openMatchDetailFull(matchId);
+}
+
+// ── ADMIN: EDIT PLAYER RATING ─────────────────────────
+function openEditRating(matchId, ratingId, charId, teamId, currentRating){
+  openModal('Изменить оценку',
+    '<div style="font-size:13px;color:var(--muted2);margin-bottom:16px;">Текущая оценка: <strong>'+currentRating+'</strong></div>'+
+    '<div class="form-group"><label class="form-label">Новая оценка (1.0 — 10.0)</label>'+
+    '<input type="number" class="form-input" id="manualRating" min="1" max="10" step="0.1" value="'+currentRating+'"></div>'+
+    '<div class="form-group" style="display:flex;align-items:center;gap:10px;">'+
+      '<input type="checkbox" id="setMotm" style="width:18px;height:18px;accent-color:var(--blue);">'+
+      '<label for="setMotm" style="font-size:13px;">⭐ Лучший игрок матча (MOTM)</label>'+
+    '</div>'+
+    '<button class="btn btn-g" style="width:100%;" onclick="saveManualRating(\''+matchId+'\',\''+ratingId+'\',\''+charId+'\',\''+teamId+'\')">Сохранить</button>'
+  );
+}
+
+function saveManualRating(matchId, ratingId, charId, teamId){
+  var val=parseFloat(document.getElementById('manualRating').value);
+  var motm=document.getElementById('setMotm').checked;
+  if(isNaN(val)||val<1||val>10){toast('Оценка от 1 до 10','err');return;}
+  val=Math.round(val*10)/10;
+
+  var doSave=function(id){
+    PATCH('match_ratings','id=eq.'+id,{manual_rating:val,is_motm:motm}).then(function(){
+      if(motm){
+        // reset others motm
+        GET('match_ratings','?match_id=eq.'+matchId).then(function(rows){
+          rows.filter(function(r){return r.id!==id&&r.is_motm;}).forEach(function(r){
+            PATCH('match_ratings','id=eq.'+r.id,{is_motm:false}).catch(function(){});
+          });
+        });
+      }
+      toast('Оценка сохранена!');closeModal();
+      openMatchDetailFull(matchId);
+    }).catch(function(){toast('Ошибка','err');});
+  };
+
+  if(ratingId){
+    doSave(ratingId);
+  } else {
+    // create new rating
+    POST('match_ratings',{match_id:matchId,character_id:charId,team_id:teamId,auto_rating:val,manual_rating:val,is_motm:motm}).then(function(res){
+      doSave(res[0].id);
+    }).catch(function(){toast('Ошибка','err');});
+  }
+}
+
+// Override saveResult to auto-calculate ratings
+var _origSaveResult=typeof saveResult!=='undefined'?saveResult:null;
+function saveResult(matchId){
+  var hs=parseInt(document.getElementById('homeGoals').value)||0;
+  var as=parseInt(document.getElementById('awayGoals').value)||0;
+  PATCH('matches','id=eq.'+matchId,{home_score:hs,away_score:as,status:'finished'}).then(function(){
+    toast('Результат сохранён!');closeModal();
+    // get match to find teams
+    GET('matches','?id=eq.'+matchId).then(function(rows){
+      if(rows.length) autoCalcMatchRatings(matchId,rows[0].home_team_id,rows[0].away_team_id,hs,as);
+    });
+    if(S.currentTournament) renderTournamentDetail(S.currentTournament.id);
+  }).catch(function(){toast('Ошибка','err');});
+}
+
+// ══════════════════════════════════════════════════════════════
+// CHARACTER REGISTRATION (при принятии инвайта)
+// ══════════════════════════════════════════════════════════════
+var COUNTRIES = ['AZ','RU','TR','DE','ES','FR','BR','AR','PT','IT','EN','UA','KZ','GE','AM'];
+var COUNTRY_FLAGS = {AZ:'🇦🇿',RU:'🇷🇺',TR:'🇹🇷',DE:'🇩🇪',ES:'🇪🇸',FR:'🇫🇷',BR:'🇧🇷',AR:'🇦🇷',PT:'🇵🇹',IT:'🇮🇹',EN:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',UA:'🇺🇦',KZ:'🇰🇿',GE:'🇬🇪',AM:'🇦🇲'};
+
+function openCharacterRegistration(teamId, inviteId){
+  var countryOpts=COUNTRIES.map(function(c){return '<option value="'+c+'">'+(COUNTRY_FLAGS[c]||'')+ ' '+c+'</option>';}).join('');
+  openModal('Регистрация персонажа',
+    '<div style="color:var(--muted2);font-size:13px;margin-bottom:20px;">Создай своего персонажа для участия в турнирах</div>'+
+    '<div class="form-group"><label class="form-label">Никнейм *</label><input type="text" class="form-input" id="charNick" placeholder="CristianoXX" maxlength="20"></div>'+
+    '<div class="form-row">'+
+      '<div class="form-group"><label class="form-label">Позиция</label><select class="form-input" id="charPos">'+
+        '<option value="ВР">🥅 ВР — Вратарь</option>'+
+        '<option value="ЗЩ">🛡 ЗЩ — Защитник</option>'+
+        '<option value="МП" selected>🔄 МП — Полузащ.</option>'+
+        '<option value="НП">⚡ НП — Нападающий</option>'+
+      '</select></div>'+
+      '<div class="form-group"><label class="form-label">Номер</label><input type="number" class="form-input" id="charNum" min="1" max="99" placeholder="10"></div>'+
+    '</div>'+
+    '<div class="form-group"><label class="form-label">Страна</label><select class="form-input" id="charCountry">'+countryOpts+'</select></div>'+
+    '<button class="btn btn-g" style="width:100%;margin-top:8px;" onclick="saveCharacter(\''+teamId+'\',\''+inviteId+'\')">⚽ Создать персонажа</button>'
+  );
+}
+
+function saveCharacter(teamId, inviteId){
+  var nick=document.getElementById('charNick').value.trim();
+  if(!nick){toast('Введи никнейм','err');return;}
+  var pos=document.getElementById('charPos').value;
+  var num=parseInt(document.getElementById('charNum').value)||null;
+  var country=document.getElementById('charCountry').value;
+
+  // check if character already exists
+  GET('characters','?user_id=eq.'+S.user.id).then(function(existing){
+    var saveOp;
+    if(existing.length){
+      saveOp=PATCH('characters','user_id=eq.'+S.user.id,{nickname:nick,position:pos,number:num,country:country,team_id:teamId});
+    } else {
+      saveOp=POST('characters',{user_id:S.user.id,team_id:teamId,nickname:nick,position:pos,number:num,country:country});
+    }
+    saveOp.then(function(){
+      // Now accept invite
+      if(inviteId){
+        PATCH('team_invites','id=eq.'+inviteId,{status:'accepted'}).then(function(){
+          PATCH('users','id=eq.'+S.user.id,{team_id:teamId}).then(function(){
+            S.user.team_id=teamId;
+            localStorage.setItem('liga_user',JSON.stringify(S.user));
+            toast('Персонаж создан и ты в команде!');
+            closeModal();
+            document.getElementById('invitePage').style.display='none';
+            launchApp();
+          });
+        });
+      } else {
+        toast('Персонаж обновлён!');closeModal();renderProfile();
+      }
+    }).catch(function(){toast('Ошибка','err');});
+  });
+}
+
+// Override acceptInvite to require character registration first
+function acceptInvite(){
+  if(!S.pendingInvite) return;
+  GET('characters','?user_id=eq.'+S.user.id).then(function(chars){
+    document.getElementById('invitePage').style.display='none';
+    if(!chars.length){
+      // need to register character first
+      document.getElementById('appShell').style.display='block';
+      setTimeout(function(){openCharacterRegistration(S.pendingInvite.team_id, S.pendingInvite.id);},100);
+    } else {
+      // already has character, just accept
+      PATCH('team_invites','id=eq.'+S.pendingInvite.id,{status:'accepted'}).then(function(){
+        PATCH('users','id=eq.'+S.user.id,{team_id:S.pendingInvite.team_id}).then(function(){
+          PATCH('characters','user_id=eq.'+S.user.id,{team_id:S.pendingInvite.team_id}).catch(function(){});
+          S.user.team_id=S.pendingInvite.team_id;
+          localStorage.setItem('liga_user',JSON.stringify(S.user));
+          toast('Ты в команде!');launchApp();
+        });
+      });
+    }
+  });
+}
+
+// Override acceptInviteById
+function acceptInviteById(invId, teamId){
+  GET('characters','?user_id=eq.'+S.user.id).then(function(chars){
+    closeModal();
+    S.pendingInvite={id:invId,team_id:teamId};
+    if(!chars.length){
+      openCharacterRegistration(teamId, invId);
+    } else {
+      PATCH('team_invites','id=eq.'+invId,{status:'accepted'}).then(function(){
+        return PATCH('users','id=eq.'+S.user.id,{team_id:teamId});
+      }).then(function(){
+        PATCH('characters','user_id=eq.'+S.user.id,{team_id:teamId}).catch(function(){});
+        S.user.team_id=teamId;
+        localStorage.setItem('liga_user',JSON.stringify(S.user));
+        loadMyTeam();toast('Ты в команде!');checkNotifs();renderProfile();
+      }).catch(function(){toast('Ошибка','err');});
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// PLAYER PROFILE PAGE
+// ══════════════════════════════════════════════════════════════
+function openPlayerProfile(userId){
+  openModal('Профиль игрока','<div class="loader"><div class="spin"></div>Загрузка...</div>');
+  Promise.all([
+    GET('users','?id=eq.'+userId),
+    GET('characters','?user_id=eq.'+userId),
+    GET('match_ratings','?user_id=eq.'+userId+'&order=created_at.desc&limit=20')
+  ]).then(function(results){
+    var user=results[0][0];var chars=results[1];var ratings=results[2];
+    if(!user){document.getElementById('modalBody').innerHTML='<div class="empty"><div class="empty-ico">👤</div><div class="empty-txt">Не найден</div></div>';return;}
+    var ch=chars[0]||null;
+    var name=user.first_name||user.username||'Игрок';
+    var av=user.photo_url?'<img src="'+user.photo_url+'" alt="" style="width:100%;height:100%;object-fit:cover;">':'👤';
+
+    // stats from events
+    var last5=ratings.slice(0,5);
+    var totalGoals=ch?ch.goals:0;
+    var totalAssists=ch?ch.assists:0;
+    var totalMatches=ch?ch.matches_played:0;
+    var avgRating=ratings.length?Math.round(ratings.reduce(function(s,r){return s+(r.manual_rating!=null?r.manual_rating:r.auto_rating);},0)/ratings.length*10)/10:null;
+
+    var last5Html=last5.length?'<div class="section-title" style="margin-top:20px;">Последние 5 матчей</div>'+
+      last5.map(function(r){
+        var fr=r.manual_rating!=null?r.manual_rating:r.auto_rating;
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(37,37,53,0.4);">'+
+          '<span style="font-size:12px;color:var(--muted2);">Матч</span>'+
+          ratingBadge(fr, r.is_motm)+
+          (r.is_motm?'<span style="font-size:11px;color:#448aff;">⭐ MOTM</span>':'')+
+        '</div>';
+      }).join(''):'';
+
+    document.getElementById('modalBody').innerHTML=
+      '<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">'+
+        '<div style="width:56px;height:56px;border-radius:14px;background:var(--s3);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">'+av+'</div>'+
+        '<div>'+
+          '<div style="font-family:Unbounded,cursive;font-size:18px;font-weight:900;">'+name+'</div>'+
+          (user.username?'<div style="color:var(--muted2);font-size:12px;">@'+user.username+'</div>':'')+
+          (ch?'<div style="margin-top:6px;display:flex;gap:6px;">'+
+            '<span class="pos-badge">'+ch.position+'</span>'+
+            (ch.number?'<span class="pos-badge">#'+ch.number+'</span>':'')+
+            '<span class="pos-badge">'+(COUNTRY_FLAGS[ch.country]||'')+ ' '+ch.country+'</span>'+
+          '</div>':'')+
+        '</div>'+
+      '</div>'+
+      (ch?'<div style="font-family:Unbounded,cursive;font-size:20px;font-weight:900;margin-bottom:16px;">'+ch.nickname+'</div>':'')+
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;">'+
+        '<div style="background:var(--s2);border-radius:10px;padding:12px;text-align:center;"><div style="font-family:Unbounded,cursive;font-size:20px;color:var(--g);">'+totalGoals+'</div><div style="font-size:10px;color:var(--muted2);">Голы</div></div>'+
+        '<div style="background:var(--s2);border-radius:10px;padding:12px;text-align:center;"><div style="font-family:Unbounded,cursive;font-size:20px;color:var(--blue);">'+totalAssists+'</div><div style="font-size:10px;color:var(--muted2);">Ассисты</div></div>'+
+        '<div style="background:var(--s2);border-radius:10px;padding:12px;text-align:center;"><div style="font-family:Unbounded,cursive;font-size:20px;color:var(--muted2);">'+totalMatches+'</div><div style="font-size:10px;color:var(--muted2);">Матчи</div></div>'+
+        '<div style="background:var(--s2);border-radius:10px;padding:12px;text-align:center;"><div style="font-family:Unbounded,cursive;font-size:20px;color:'+(avgRating?ratingColor(avgRating):'var(--muted2)')+';">'+(avgRating||'—')+'</div><div style="font-size:10px;color:var(--muted2);">Рейтинг</div></div>'+
+      '</div>'+
+      last5Html+
+      (S.user&&S.user.is_admin&&ch?'<button class="btn btn-outline btn-sm" style="width:100%;margin-top:16px;" onclick="openEditCharacter(\''+ch.user_id+'\')">✏️ Редактировать персонажа</button>':'')+
+    '';
+  }).catch(function(e){console.error(e);document.getElementById('modalBody').innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-txt">Ошибка</div></div>';});
+}
+
+function openEditCharacter(userId){
+  GET('characters','?user_id=eq.'+userId).then(function(chars){
+    if(!chars.length){toast('Нет персонажа','err');return;}
+    var ch=chars[0];
+    openModal('Редактировать персонажа',
+      '<div class="form-group"><label class="form-label">Никнейм</label><input type="text" class="form-input" id="charNickEdit" value="'+ch.nickname+'"></div>'+
+      '<div class="form-row">'+
+        '<div class="form-group"><label class="form-label">Позиция</label><select class="form-input" id="charPosEdit">'+
+          ['ВР','ЗЩ','МП','НП'].map(function(p){return '<option value="'+p+'"'+(ch.position===p?' selected':'')+'>'+p+'</option>';}).join('')+
+        '</select></div>'+
+        '<div class="form-group"><label class="form-label">Номер</label><input type="number" class="form-input" id="charNumEdit" value="'+(ch.number||'')+'"></div>'+
+      '</div>'+
+      '<button class="btn btn-g" style="width:100%;" onclick="saveCharacterEdit(\''+userId+'\')">Сохранить</button>'
+    );
+  });
+}
+
+function saveCharacterEdit(userId){
+  PATCH('characters','user_id=eq.'+userId,{
+    nickname:document.getElementById('charNickEdit').value.trim(),
+    position:document.getElementById('charPosEdit').value,
+    number:parseInt(document.getElementById('charNumEdit').value)||null
+  }).then(function(){toast('Сохранено!');closeModal();}).catch(function(){toast('Ошибка','err');});
+}
+
+// ══════════════════════════════════════════════════════════════
+// TEAM PROFILE PAGE — ENHANCED
+// ══════════════════════════════════════════════════════════════
+function openTeamProfile(teamId){
+  openModal('Команда','<div class="loader"><div class="spin"></div>Загрузка...</div>');
+  Promise.all([
+    GET('teams','?id=eq.'+teamId),
+    GET('users','?team_id=eq.'+teamId),
+    GET('match_team_ratings','?team_id=eq.'+teamId+'&order=created_at.desc&limit=20')
+  ]).then(function(results){
+    var team=results[0][0]; var members=results[1]; var ratings=results[2];
+    if(!team){document.getElementById('modalBody').innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-txt">Не найдена</div></div>';return;}
+
+    var last5=ratings.slice(0,5);
+    var avgRating=ratings.length?Math.round(ratings.reduce(function(s,r){return s+parseFloat(r.rating);},0)/ratings.length*10)/10:null;
+    var wins=ratings.filter(function(r){return r.goals_scored>r.goals_conceded;}).length;
+    var totalGoals=ratings.reduce(function(s,r){return s+r.goals_scored;},0);
+
+    var last5Html=last5.length?'<div class="section-title" style="margin-top:16px;">Последние 5 матчей</div>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;">'+
+      last5.map(function(r){
+        var won=r.goals_scored>r.goals_conceded;
+        var draw=r.goals_scored===r.goals_conceded;
+        return '<div style="background:var(--s2);border-radius:8px;padding:8px 12px;text-align:center;min-width:60px;">'+
+          ratingBadge(r.rating,false)+
+          '<div style="font-size:11px;margin-top:4px;color:'+(won?'var(--g)':draw?'var(--muted2)':'var(--red)')+';">'+(won?'В':draw?'Н':'П')+'</div>'+
+          '<div style="font-size:10px;color:var(--muted2);">'+r.goals_scored+':'+r.goals_conceded+'</div>'+
+        '</div>';
+      }).join('')+
+      '</div>':'';
+
+    document.getElementById('modalBody').innerHTML=
+      '<div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">'+
+        '<div style="width:52px;height:52px;border-radius:14px;background:'+(team.color||'#00e676')+';display:flex;align-items:center;justify-content:center;font-family:Unbounded,cursive;font-size:22px;font-weight:900;color:#000;flex-shrink:0;">'+team.name[0]+'</div>'+
+        '<div><div style="font-family:Unbounded,cursive;font-size:20px;font-weight:900;">'+team.name+'</div><div style="color:var(--muted2);font-size:12px;">'+members.length+' игроков</div></div>'+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">'+
+        '<div style="background:var(--s2);border-radius:10px;padding:12px;text-align:center;"><div style="font-family:Unbounded,cursive;font-size:20px;color:var(--g);">'+wins+'</div><div style="font-size:10px;color:var(--muted2);">Победы</div></div>'+
+        '<div style="background:var(--s2);border-radius:10px;padding:12px;text-align:center;"><div style="font-family:Unbounded,cursive;font-size:20px;color:var(--orange);">'+totalGoals+'</div><div style="font-size:10px;color:var(--muted2);">Голы</div></div>'+
+        '<div style="background:var(--s2);border-radius:10px;padding:12px;text-align:center;"><div style="font-family:Unbounded,cursive;font-size:20px;color:'+(avgRating?ratingColor(avgRating):'var(--muted2)')+';">'+(avgRating||'—')+'</div><div style="font-size:10px;color:var(--muted2);">Ср. рейтинг</div></div>'+
+      '</div>'+
+      last5Html+
+      '<div class="section-title" style="margin-top:16px;">Состав</div>'+
+      members.map(function(u){
+        var isCap=u.id===team.captain_id;
+        var av=u.photo_url?'<img src="'+u.photo_url+'" alt="" style="width:100%;height:100%;object-fit:cover;">':'👤';
+        return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(37,37,53,0.4);cursor:pointer;" onclick="openPlayerProfile(\''+u.id+'\')">'+
+          '<div style="width:32px;height:32px;border-radius:8px;background:var(--s3);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:14px;">'+av+'</div>'+
+          '<div style="flex:1;"><div style="font-weight:600;font-size:13px;">'+(u.first_name||u.username||'Игрок')+(isCap?' 👑':'')+'</div><div style="font-size:11px;color:var(--muted2);">'+(u.username?'@'+u.username:'')+'</div></div>'+
+        '</div>';
+      }).join('')+
+    '';
+  }).catch(function(e){console.error(e);document.getElementById('modalBody').innerHTML='<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-txt">Ошибка</div></div>';});
+}
+
+// ══════════════════════════════════════════════════════════════
+// ADMIN PANEL
+// ══════════════════════════════════════════════════════════════
+function openAdminPanel(){
+  openModal('Админ панель',
+    '<div style="display:flex;flex-direction:column;gap:8px;">'+
+      '<button class="btn btn-outline" style="width:100%;justify-content:flex-start;" onclick="adminSection(\'maintenance\')">🔧 Техническое обслуживание</button>'+
+      '<button class="btn btn-outline" style="width:100%;justify-content:flex-start;" onclick="adminSection(\'admins\')">👑 Выдача прав администратора</button>'+
+      '<button class="btn btn-outline" style="width:100%;justify-content:flex-start;" onclick="adminSection(\'requests\')">📋 Запросы (удаление / смена капитана)</button>'+
+    '</div>'
+  );
+}
+
+function adminSection(sec){
+  if(sec==='maintenance'){
+    GET('settings','?key=eq.maintenance').then(function(rows){
+      var current=rows.length?rows[0].value==='true':false;
+      openModal('Техобслуживание',
+        '<div style="text-align:center;padding:20px 0;">'+
+          '<div style="font-size:48px;margin-bottom:16px;">'+(current?'🔴':'🟢')+'</div>'+
+          '<div style="font-family:Unbounded,cursive;font-size:16px;font-weight:700;margin-bottom:8px;">Статус: '+(current?'ВКЛЮЧЕНО':'ВЫКЛЮЧЕНО')+'</div>'+
+          '<div style="color:var(--muted2);font-size:13px;margin-bottom:24px;">При включении пользователи видят страницу тех. обслуживания</div>'+
+          '<button class="btn '+(current?'btn-g':'btn-red')+'" style="width:100%;" onclick="toggleMaintenance('+(current?'false':'true')+')">'+
+            (current?'✓ Выключить':'⚠️ Включить')+
+          '</button>'+
+        '</div>'
+      );
+    });
+  } else if(sec==='admins'){
+    openModal('Выдача прав',
+      '<div class="form-group"><label class="form-label">Username (без @)</label><input type="text" class="form-input" id="adminUsername" placeholder="username"></div>'+
+      '<button class="btn btn-g" style="width:100%;" onclick="grantAdmin()">👑 Выдать права</button>'+
+      '<div style="margin-top:16px;" id="adminGrantResult"></div>'
+    );
+  } else if(sec==='requests'){
+    GET('admin_requests','?status=eq.pending&order=created_at.desc').then(function(rows){
+      if(!rows.length){
+        openModal('Запросы','<div class="empty" style="padding:32px;"><div class="empty-ico">📋</div><div class="empty-txt">Нет запросов</div></div>');
+        return;
+      }
+      Promise.all(rows.map(function(r){
+        return Promise.all([
+          GET('teams','?id=eq.'+r.team_id),
+          GET('users','?id=eq.'+r.requested_by)
+        ]).then(function(res){return Object.assign({},r,{_team:res[0][0],_user:res[1][0]});});
+      })).then(function(enriched){
+        var html=enriched.map(function(r){
+          var typeLabel={delete_team:'🗑 Удаление команды',change_captain:'👑 Смена капитана'}[r.type]||r.type;
+          return '<div style="background:var(--s2);border-radius:12px;padding:14px;margin-bottom:10px;">'+
+            '<div style="font-weight:700;margin-bottom:4px;">'+typeLabel+'</div>'+
+            '<div style="font-size:12px;color:var(--muted2);margin-bottom:4px;">Команда: '+(r._team?r._team.name:'?')+'</div>'+
+            '<div style="font-size:12px;color:var(--muted2);margin-bottom:12px;">От: '+(r._user?r._user.first_name||r._user.username:'?')+(r.reason?' · "'+r.reason+'"':'')+'</div>'+
+            (r.type==='change_captain'&&r.new_captain_id?
+              '<div style="font-size:12px;color:var(--muted2);margin-bottom:12px;">Новый капитан ID: '+r.new_captain_id+'</div>':'')+
+            '<div style="display:flex;gap:8px;">'+
+              '<button class="btn btn-red btn-sm" style="flex:1;" onclick="resolveRequest(\''+r.id+'\',\'rejected\')">Отклонить</button>'+
+              '<button class="btn btn-g btn-sm" style="flex:1;" onclick="resolveRequest(\''+r.id+'\',\'approved\',\''+r.type+'\',\''+r.team_id+'\','+(r.new_captain_id?'\''+r.new_captain_id+'\'':'null')+')">Одобрить</button>'+
+            '</div>'+
+          '</div>';
+        }).join('');
+        openModal('Запросы', html);
+      });
+    });
+  }
+}
+
+function toggleMaintenance(val){
+  PATCH('settings','key=eq.maintenance',{value:String(val),updated_at:new Date().toISOString()}).then(function(){
+    toast('Статус изменён!');closeModal();
+  }).catch(function(){toast('Ошибка','err');});
+}
+
+function grantAdmin(){
+  var username=document.getElementById('adminUsername').value.trim().replace('@','');
+  if(!username){toast('Введи username','err');return;}
+  var wrap=document.getElementById('adminGrantResult');
+  wrap.innerHTML='<div class="loader" style="padding:12px;"><div class="spin"></div></div>';
+  GET('users','?username=eq.'+username).then(function(rows){
+    if(!rows.length){wrap.innerHTML='<div style="color:var(--red);font-size:13px;">Пользователь не найден</div>';return;}
+    PATCH('users','id=eq.'+rows[0].id,{is_admin:true}).then(function(){
+      wrap.innerHTML='<div style="color:var(--g);font-size:13px;">✓ Права выданы @'+username+'</div>';
+      toast('Готово!');
+    });
+  }).catch(function(){wrap.innerHTML='<div style="color:var(--red);font-size:13px;">Ошибка</div>';});
+}
+
+function resolveRequest(reqId, status, type, teamId, newCapId){
+  PATCH('admin_requests','id=eq.'+reqId,{status:status,resolved_by:S.user.id}).then(function(){
+    if(status==='approved'){
+      if(type==='delete_team'){
+        PATCH('users','team_id=eq.'+teamId,{team_id:null}).then(function(){
+          DEL('teams','id=eq.'+teamId).then(function(){toast('Команда удалена');});
+        });
+      } else if(type==='change_captain'&&newCapId){
+        PATCH('teams','id=eq.'+teamId,{captain_id:newCapId}).then(function(){toast('Капитан сменён');});
+      }
+    } else {
+      toast('Запрос отклонён');
+    }
+    closeModal();
+  }).catch(function(){toast('Ошибка','err');});
+}
+
+// ── MAINTENANCE CHECK ─────────────────────────────────
+function checkMaintenance(){
+  GET('settings','?key=eq.maintenance').then(function(rows){
+    var on=rows.length&&rows[0].value==='true';
+    if(on&&S.user&&!S.user.is_admin){
+      document.getElementById('appShell').style.display='none';
+      showMaintenancePage();
+    }
+  }).catch(function(){});
+}
+
+function showMaintenancePage(){
+  var el=document.createElement('div');
+  el.id='maintenancePage';
+  el.style.cssText='position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9998;gap:16px;';
+  el.innerHTML='<div style="font-size:64px;">🔧</div>'+
+    '<div style="font-family:Unbounded,cursive;font-size:24px;font-weight:900;color:var(--g);">Тех. обслуживание</div>'+
+    '<div style="color:var(--muted2);font-size:14px;text-align:center;max-width:300px;">Сайт временно недоступен. Скоро вернёмся!</div>';
+  document.body.appendChild(el);
+}
+
+// Add admin panel button to profile & maintenance check after launch
+var _origLaunchApp=launchApp;
+function launchApp(){
+  _origLaunchApp();
+  checkMaintenance();
+}
+
+// Add admin panel entry to profile rendering
+var _origRenderProfile=renderProfile;
+function renderProfile(){
+  _origRenderProfile();
+  if(S.user&&S.user.is_admin){
+    var profileEl=document.getElementById('profileContent');
+    if(profileEl){
+      var adminBtn=document.createElement('div');
+      adminBtn.style.marginTop='12px';
+      adminBtn.innerHTML='<button class="btn btn-outline" style="width:100%;border-color:var(--g);color:var(--g);" onclick="openAdminPanel()">⚙️ Панель администратора</button>';
+      profileEl.appendChild(adminBtn);
+
+      // also add edit character button if has character
+      GET('characters','?user_id=eq.'+S.user.id).then(function(chars){
+        if(chars.length){
+          var editBtn=document.createElement('div');
+          editBtn.style.marginTop='8px';
+          editBtn.innerHTML='<button class="btn btn-outline btn-sm" style="width:100%;" onclick="openCharacterRegistration(\''+S.user.team_id+'\',null)">👟 Редактировать персонажа</button>';
+          profileEl.appendChild(editBtn);
+        } else if(S.user.team_id){
+          var regBtn=document.createElement('div');
+          regBtn.style.marginTop='8px';
+          regBtn.innerHTML='<button class="btn btn-g btn-sm" style="width:100%;" onclick="openCharacterRegistration(\''+S.user.team_id+'\',null)">⚽ Создать персонажа</button>';
+          profileEl.appendChild(regBtn);
+        }
+      }).catch(function(){});
+    }
+  }
+}
+
+// Fix team back button
+document.addEventListener('DOMContentLoaded',function(){
+  var backBtn=document.getElementById('teamBackBtn');
+  if(backBtn){
+    backBtn.onclick=function(){
+      if(S._prevPage) showPage(S._prevPage);
+      else showPage('tournaments');
+    };
+  }
+});
+
+// Make player cards clickable in players page
+var _origRenderPlayers=renderPlayers;
+function renderPlayers(){
+  _origRenderPlayers();
+  // add click handlers
+  setTimeout(function(){
+    document.querySelectorAll('#playersList .player-card').forEach(function(card,i){
+      var user=S.players[i];
+      if(user) card.onclick=function(){openPlayerProfile(user.id);};
+    });
+  },100);
+}
+
+// Make team names in standings clickable (open profile popup)
+var _origOpenTeamPage=openTeamPage;
+function openTeamPage(teamId){
+  openTeamProfile(teamId);
+}
+
+// Request team deletion (from captain in team page)
+function requestDeleteTeam(teamId){
+  openModal('Запрос на удаление',
+    '<div style="color:var(--muted2);font-size:13px;margin-bottom:16px;">Запрос будет рассмотрен администратором. После одобрения команда удаляется, игроки становятся свободными.</div>'+
+    '<div class="form-group"><label class="form-label">Причина (необязательно)</label><input type="text" class="form-input" id="delReason" placeholder="Причина удаления..."></div>'+
+    '<button class="btn btn-red" style="width:100%;" onclick="submitDeleteRequest(\''+teamId+'\')">Отправить запрос</button>'
+  );
+}
+
+function submitDeleteRequest(teamId){
+  POST('admin_requests',{type:'delete_team',team_id:teamId,requested_by:S.user.id,reason:document.getElementById('delReason').value||null,status:'pending'}).then(function(){
+    toast('Запрос отправлен администратору');closeModal();
+  }).catch(function(){toast('Ошибка','err');});
+}
+
+// Request captain change
+function requestTransferCaptain(teamId){
+  GET('users','?team_id=eq.'+teamId).then(function(members){
+    var others=members.filter(function(u){return u.id!==S.user.id;});
+    var opts=others.map(function(u){return '<option value="'+u.id+'">'+(u.first_name||u.username||'Игрок')+'</option>';}).join('');
+    openModal('Запрос смены капитана',
+      '<div class="form-group"><label class="form-label">Новый капитан</label><select class="form-input" id="newCapReq">'+opts+'</select></div>'+
+      '<button class="btn btn-g" style="width:100%;" onclick="submitCapRequest(\''+teamId+'\')">Отправить запрос</button>'
+    );
+  });
+}
+
+function submitCapRequest(teamId){
+  POST('admin_requests',{type:'change_captain',team_id:teamId,requested_by:S.user.id,new_captain_id:document.getElementById('newCapReq').value,status:'pending'}).then(function(){
+    toast('Запрос отправлен');closeModal();
+  }).catch(function(){toast('Ошибка','err');});
 }
 
 // ── INIT ─────────────────────────────────────────────
